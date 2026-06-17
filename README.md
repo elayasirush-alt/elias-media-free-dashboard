@@ -1,22 +1,21 @@
-# Elias Media Cloudflare Free Dashboard
+# Elias Media Cloudflare Media Preview
 
-Free Cloudflare Pages version for sharing with friends.
+This version includes:
+- Video previews for direct MP4 results.
+- Image previews for photo results.
+- Download buttons for downloadable media files.
+- API setup tab removed from public UI.
+- Logo restored.
+- Background Music & SFX tab added.
+- Two media search terms per timestamp.
+- Repeated clips are hidden across timestamp results in the same run.
+- Canva terms, SFX sources, music sources, and report export remain.
 
-Upload to GitHub:
+Cloudflare Pages settings:
+- Build command: blank
+- Build output directory: public
+
+Upload:
 - public/
 - functions/
 - README.md
-
-Cloudflare Pages settings:
-- Build command: leave blank
-- Build output directory: public
-
-Add environment variables:
-- PEXELS_API_KEY
-- PIXABAY_API_KEY
-- UNSPLASH_ACCESS_KEY
-- YOUTUBE_API_KEY
-- FLICKR_API_KEY
-- GIPHY_API_KEY
-
-This version does not render MP4 videos online. It is for media planning/search, Canva terms, SFX sources, music sources, and reports.

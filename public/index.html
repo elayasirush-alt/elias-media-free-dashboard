@@ -4,63 +4,89 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Elias Media Free Dashboard</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <main class="shell">
-  <h1>Elias Media Free Dashboard</h1>
-  <p>Free Cloudflare version: timestamp media suggestions, Canva terms, SFX, music sources, and media search. No heavy online video rendering.</p>
+  <nav class="topbar">
+    <div class="brand">
+      <img src="/logo.png" alt="Elias Media logo">
+      <div>
+        <strong>Elias Media Free Dashboard</strong>
+        <span>Media previews, Canva terms, sound effects, background music and editing reports</span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>See the clips before you download them.</h1>
+    <p>Paste a timestamped script, get non-repeating media suggestions, view video/image previews, download media files, and get Canva, sound effect, and background music source links.</p>
+  </section>
 
   <div class="tabs">
-    <button onclick="showTab('suggest')">Timestamp suggestions</button>
-    <button onclick="showTab('search')">Search media</button>
-    <button onclick="showTab('setup')">Setup/API status</button>
+    <button class="tab active" data-tab="suggest">Timestamp suggestions</button>
+    <button class="tab" data-tab="search">Search media</button>
+    <button class="tab" data-tab="audio">Background music & SFX</button>
   </div>
 
-  <section id="suggest" class="card">
+  <section id="suggest" class="card panel">
     <h2>Timestamp suggestions</h2>
-    <input id="topic" placeholder="Topic e.g. Trucks nobody wants in 2026">
-    <select id="niche"></select>
-    <select id="count">
-      <option value="2">2 per source</option>
-      <option value="3" selected>3 per source</option>
-      <option value="5">5 per source</option>
-      <option value="10">10 per source</option>
-      <option value="20">20 per source max</option>
-    </select>
-    <label><input id="live" type="checkbox" checked> Search live media sources</label>
-    <div id="sources"></div>
+    <div class="grid">
+      <input id="topic" placeholder="Topic e.g. Trucks nobody wants in 2026">
+      <select id="niche"></select>
+      <select id="count">
+        <option value="2" selected>2 per source</option>
+        <option value="3">3 per source</option>
+        <option value="5">5 per source</option>
+        <option value="10">10 per source</option>
+        <option value="20">20 per source max</option>
+      </select>
+      <select id="previewMode">
+        <option value="true" selected>Show previews</option>
+        <option value="false">Hide previews to save bandwidth</option>
+      </select>
+    </div>
+    <h3>Sources to search</h3>
+    <div id="sources" class="source-grid"></div>
     <textarea id="script" rows="12" placeholder="00:00 Your sentence here&#10;00:07 Next sentence here"></textarea>
     <button id="suggestBtn">Generate suggestions</button>
-    <button id="downloadBtn" disabled>Download report</button>
+    <button id="downloadBtn" class="ghost" disabled>Download report</button>
     <div id="suggestResults"></div>
   </section>
 
-  <section id="search" class="card hidden">
+  <section id="search" class="card panel hidden">
     <h2>Search media</h2>
-    <input id="searchQuery" placeholder="pickup trucks dealership lot">
-    <select id="searchNiche"></select>
-    <select id="searchCount">
-      <option value="3" selected>3 per source</option>
-      <option value="6">6 per source</option>
-      <option value="10">10 per source</option>
-      <option value="20">20 per source max</option>
-    </select>
+    <div class="grid">
+      <input id="searchQuery" placeholder="pickup trucks dealership lot">
+      <select id="searchNiche"></select>
+      <select id="searchCount">
+        <option value="3" selected>3 per source</option>
+        <option value="6">6 per source</option>
+        <option value="10">10 per source</option>
+        <option value="20">20 per source max</option>
+      </select>
+      <select id="searchPreview">
+        <option value="true" selected>Show previews</option>
+        <option value="false">Hide previews</option>
+      </select>
+    </div>
     <button id="searchBtn">Search</button>
     <div id="searchResults"></div>
   </section>
 
-  <section id="setup" class="card hidden">
-    <h2>Setup/API status</h2>
-    <p>Add API keys in Cloudflare Pages environment variables, not GitHub.</p>
-    <pre>PEXELS_API_KEY
-PIXABAY_API_KEY
-UNSPLASH_ACCESS_KEY
-YOUTUBE_API_KEY
-FLICKR_API_KEY
-GIPHY_API_KEY</pre>
-    <button id="statusBtn">Check API status</button>
-    <div id="status"></div>
+  <section id="audio" class="card panel hidden">
+    <h2>Background music & sound effects</h2>
+    <p class="muted">Search audio sources directly. These open source libraries where you can preview and download audio.</p>
+    <div class="grid">
+      <input id="audioQuery" placeholder="dark automotive documentary tension">
+      <select id="audioKind">
+        <option value="music">Background music</option>
+        <option value="sfx">Sound effects</option>
+      </select>
+    </div>
+    <button id="audioBtn">Find audio sources</button>
+    <div id="audioResults"></div>
   </section>
 </main>
 <script src="/app.js"></script>
