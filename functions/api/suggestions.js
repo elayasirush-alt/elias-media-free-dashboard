@@ -26,10 +26,19 @@ function parseScript(script,topic,n){return String(script||'').split(/\r?\n/).ma
 function audioItem(source,type,title,url,meta=''){return item(source,type,title,url,'','',meta)}
 function musicPlan(topic,n){const q=`${topic||n} documentary background music no vocals`; return {mainMood:'Serious documentary',sources:[audioItem('Pixabay Music','background music',q,`https://pixabay.com/music/search/${encodeURIComponent(q)}/`),audioItem('Mixkit','background music',q,'https://mixkit.co/free-stock-music/'),audioItem('YouTube Audio Library','background music',q,'https://studio.youtube.com/channel/UC/music')]}}
 function sfx(text=''){const l=text.toLowerCase(); let category='Transition', use='Use a soft whoosh between scenes.', terms=['subtle transition whoosh','soft cinematic whoosh']; if(/failure|warning|risk|panic|problem|collapse|crash/.test(l)){category='Impact'; use='Use a low boom or dark hit on the key point.'; terms=['low cinematic boom','dark impact hit'];} if(/million|billion|%|percent|price|inventory|sales|\$/.test(l)){category='Data'; use='Use a clean data ping on the number.'; terms=['data ping','clean UI click'];} return {category,use,terms,sources:[audioItem('Pixabay Sound Effects','sound effect',terms[0],`https://pixabay.com/sound-effects/search/${encodeURIComponent(terms[0])}/`),audioItem('Freesound','sound effect',terms[1],`https://freesound.org/search/?q=${encodeURIComponent(terms[1])}`)]}}
-export async function onRequest(context){if(context.request.method==='OPTIONS')return json({});try{const b=await context.request.json(); const scenes=parseScript(b.script,b.topic||'',b.niche||'general'); if(!scenes.length) return json({error:'No valid timestamps found. Use 00:00 Sentence format.'},400); const used=new Set(); for(const s of scenes){s.media={groups: await searchScene(s.mediaSearchTerms, Math.max(1,Math.min(+b.count||3,20)), b.sources||ALL, context.env, used)};} const backgroundMusic=musicPlan(b.topic||'',b.niche||'general'); const report=['STRICT NO-REPEAT MODE: ON','BACKGROUND MUSIC',...backgroundMusic.sources.map(x=>x.source+': '+x.url),'',...scenes.map(s=>`${s.timestamp} ${s.text}
-Media Terms: ${(s.mediaSearchTerms||[]).join(' | ')}
-Canva: ${(s.canvaTerms||[]).join(' | ')}
-SFX: ${s.sfx.category} - ${s.sfx.use}
-`).join('
-')]; return json({ok:true,total:scenes.length,scenes,backgroundMusic,report:report.join('
-')});}catch(e){return json({error:e.message},500)}}
+export async function onRequest(context){
+  if(context.request.method==='OPTIONS')return json({});
+  try{
+    const b=await context.request.json();
+    const scenes=parseScript(b.script,b.topic||'',b.niche||'general');
+    if(!scenes.length) return json({error:'No valid timestamps found. Use 00:00 Sentence format.'},400);
+    const used=new Set();
+    for(const s of scenes){
+      s.media={groups: await searchScene(s.mediaSearchTerms, Math.max(1,Math.min(+b.count||3,20)), b.sources||ALL, context.env, used)};
+    }
+    const backgroundMusic=musicPlan(b.topic||'',b.niche||'general');
+    const sceneLines=scenes.map(s=>`${s.timestamp} ${s.text}\nMedia Terms: ${(s.mediaSearchTerms||[]).join(' | ')}\nCanva: ${(s.canvaTerms||[]).join(' | ')}\nSFX: ${s.sfx.category} - ${s.sfx.use}\n`).join('\n');
+    const report=['STRICT NO-REPEAT MODE: ON','BACKGROUND MUSIC',...backgroundMusic.sources.map(x=>x.source+': '+x.url),'',sceneLines].join('\n');
+    return json({ok:true,total:scenes.length,scenes,backgroundMusic,report});
+  }catch(e){return json({error:e.message},500)}
+}
